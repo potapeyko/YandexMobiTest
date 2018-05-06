@@ -13,12 +13,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class GalleryActivity extends AppCompatActivity implements ActivityCallback{
+public class GalleryActivity extends AppCompatActivity implements ActivityCallback {
 
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView galleryRv;
     private GalleryAdapter rvAdapter;
     private TextView updateTimeTV;
+    private final Handler handler = new Handler();
+    private Runnable runnableCode;
     private Calendar lastUpdate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,7 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
         this.setTitle(getResources().getString(R.string.gallery_label));
         updateTimeTV = findViewById(R.id.ac_gallery_update_time);
         swipeRefresh = findViewById(R.id.ac_gallery_swipe_refresh);
-        swipeRefresh.setRefreshing(false);
+        swipeRefresh.setRefreshing(true);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -40,12 +42,38 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
         galleryRv.setLayoutManager(layoutManager);
         rvAdapter = new GalleryAdapter(this);
         galleryRv.setAdapter(rvAdapter);
-        ((MyApplication) getApplication()).getUrls(this,LinkGetter.Status.NO);//запрос данных
+        ((MyApplication) getApplication()).getUrls(this,LinkGetter.Status.NO);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startPeriodicallyUpdateTimeTV();//возобновляем обновление текста
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnableCode);//Отменяем обнвление текста
+    }
+
+    private void startPeriodicallyUpdateTimeTV() {
+        runnableCode = new Runnable() {
+            @Override
+            public void run() {
+                if(lastUpdate!=null){
+                    updateTimeTV.setText(getTimePeriod(lastUpdate,Calendar.getInstance()));
+                }
+                handler.postDelayed(this, 2*60*1000);//каждые 2 минуты
+            }
+        };
+// Start the initial runnable task by posting through the handler
+        handler.post(runnableCode);
+    }
+
     private void refreshItems() {
         ((MyApplication) getApplication()).getUrls(this,LinkGetter.Status.INTERNET);//запрашиваем попытку обновиться по сети
     }
-
     @Override
     public void urlPostResults(ArrayList<ImageData> data, Calendar lastUpdate) {
         swipeRefresh.setRefreshing(false);
@@ -63,7 +91,6 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
             rvAdapter.notifyDataSetChanged();
         }
     }
-
     /**
      * По разнице во времени возвращает строковую фразу для описания времени последнего обновления
      */
