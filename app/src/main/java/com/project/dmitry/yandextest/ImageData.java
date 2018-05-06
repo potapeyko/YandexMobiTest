@@ -3,8 +3,6 @@ package com.project.dmitry.yandextest;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 public class ImageData implements Parcelable {
 
     private String mUrl;
