@@ -40,6 +40,7 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
         galleryRv.setLayoutManager(layoutManager);
         rvAdapter = new GalleryAdapter(this);
         galleryRv.setAdapter(rvAdapter);
+        ((MyApplication) getApplication()).getUrls(this,LinkGetter.Status.NO);//запрос данных
     }
     private void refreshItems() {
         ((MyApplication) getApplication()).getUrls(this,LinkGetter.Status.INTERNET);//запрашиваем попытку обновиться по сети

@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class LinkGetter implements LinkGetterCallback {
-   private OkHttpTask okHttpTask;
+    private OkHttpTask okHttpTask;
+    private SharedReadTask sharedReadTask;
 
     public enum Status {
         INTERNET,
@@ -18,10 +19,19 @@ public class LinkGetter implements LinkGetterCallback {
     @Override
     public void urlPostResults(ArrayList<ImageData> data, @NonNull Mode mode, Calendar lastUpdate) {
         ActivityCallback listener = activityWeakReference.get();
+        if(mode== Mode.SHARED){//результаты из shared
+            result = data;//запомнили ссылки
+            this.lastUpdate = lastUpdate;
+            if(listener!=null){
+                listener.urlPostResults(data,lastUpdate);
+            }
+        }
         if(mode == Mode.INTERNET){
             if(data!=null && data.size()!=0){
                 result = data;//запомнили ссылки
                 this.lastUpdate = Calendar.getInstance();//запомнили время
+                SharedWriteTask writeTask = new SharedWriteTask(data,this.lastUpdate);
+                writeTask.execute();//записали все в файл
             }
             if(listener!=null){
                 listener.urlPostResults(data,this.lastUpdate);//отдаем результаты
@@ -40,7 +50,7 @@ public class LinkGetter implements LinkGetterCallback {
         if (stat == Status.INTERNET) {//хотим получить из сети. Вызывается если свайпом обновить
             if (ConnectionUtils.haveNetworkConnection(appContext)) {//есть подключение, нужно пытаться
                 //запускать новую нужно, если старой нет или она уже отработала
-                if(okHttpTask==null||okHttpTask.getStatus()== OkHttpTask.Status.FINISHED) {
+                if(okHttpTask==null||okHttpTask.getStatus()==OkHttpTask.Status.FINISHED) {
                     okHttpTask = new OkHttpTask();
                     okHttpTask.link(this);
                     okHttpTask.execute(YANDEX_DAY_FOTO_URL);
@@ -51,6 +61,13 @@ public class LinkGetter implements LinkGetterCallback {
             if (result != null) {//уже знаем ссылки - возвращаем их
                 activity.urlPostResults(result, lastUpdate);
                 return;
+            }
+            //не знаем результат, идем в Shared
+            //запускать новую нужно, если старой нет или она уже отработала
+            if(sharedReadTask==null||sharedReadTask.getStatus()==OkHttpTask.Status.FINISHED) {
+                sharedReadTask = new SharedReadTask();
+                sharedReadTask.link(this);
+                sharedReadTask.execute();
             }
         }
     }
