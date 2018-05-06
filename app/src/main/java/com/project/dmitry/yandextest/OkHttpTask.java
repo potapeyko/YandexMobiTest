@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -14,8 +15,12 @@ import okhttp3.Response;
 
 class OkHttpTask extends AsyncTask<String, String, ArrayList<ImageData>> {
 
-    private OkHttpClient client = new OkHttpClient();
-    LinkGetterCallback listener; // объект, хранящийся в Application, через каторый активность просит ссылки
+    private OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout ( 10 , TimeUnit . SECONDS )
+            .writeTimeout ( 10 , TimeUnit . SECONDS )
+            .readTimeout ( 30 , TimeUnit. SECONDS )
+            .build();
+    private LinkGetterCallback listener; // объект, хранящийся в Application, через каторый активность просит ссылки
     //собирается при уничтожении приложения
     @Override
     protected ArrayList<ImageData> doInBackground(String... params) {
@@ -23,8 +28,8 @@ class OkHttpTask extends AsyncTask<String, String, ArrayList<ImageData>> {
         builder.url(params[0]);
         Request request = builder.build();
         if (!isCancelled()) {
-            try {
-                Response response = client.newCall(request).execute();
+            try(Response response = client.newCall(request).execute()) {
+                if(!response.isSuccessful())return null;
                 String responseString = response.body().string();
                 JSONObject json = new JSONObject(responseString);
                 JSONArray array = json.getJSONArray("entries");//набор информаци о фото
