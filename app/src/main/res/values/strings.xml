@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">YandexTest</string>
     <string name="gallery_label">Фото дня - Яндекс.Фотки</string>
+    <string name="image_download_faiil">Не удалось загрузить картинки</string>
+    <string name="time_12_and_more">Обновлено более 12 часов назад</string>
+    <string name="time_1_12_hour">Обновлено часов назад:</string>
+    <string name="time_1_59_minutes">Обновлено минут назад:</string>
+    <string name="time_less_minute">Обновлено менее минуты назад</string>
 </resources>

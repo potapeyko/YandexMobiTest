@@ -42,17 +42,4 @@ public class ImageData implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(mUrl);
     }
-
-    public static ArrayList<ImageData> getData(){
-        ArrayList<ImageData> data = new ArrayList<>(8);
-        data.add(new ImageData("https://stihi.ru/pics/2011/05/16/7214.jpg"));
-        data.add(new ImageData("https://stihi.ru/pics/2011/05/16/7214.jpg"));
-        data.add(new ImageData("https://img1.goodfon.ru/original/1366x768/9/87/priroda-gory-leto-svet-solnca.jpg"));
-        data.add(new ImageData("https://img1.goodfon.ru/original/1366x768/9/87/priroda-gory-leto-svet-solnca.jpg"));
-        data.add(new ImageData("http://humor.fm/uploads/posts/2015-05/12/002.jpg"));
-        data.add(new ImageData("http://humor.fm/uploads/posts/2015-05/12/002.jpg"));
-        data.add(new ImageData("http://www.mobilmusic.ru/mfile/1a/9a/7f/798363-320.jpg"));
-        data.add(new ImageData("http://www.mobilmusic.ru/mfile/1a/9a/7f/798363-320.jpg"));
-        return data;
-    }
 }
