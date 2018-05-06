@@ -1,6 +1,7 @@
 package com.project.dmitry.yandextest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -74,7 +75,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 ImageData imageData = mImageData.get(position);
-               //start activity
+                Intent intent = new Intent(mContext, DetailsActivity.class);
+                intent.putExtra(DetailsActivity.EXTRA_SPACE_PHOTO, imageData);
+                mContext.startActivity(intent);
             }
         }
     }

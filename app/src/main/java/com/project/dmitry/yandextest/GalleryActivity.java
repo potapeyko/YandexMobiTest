@@ -40,9 +40,14 @@ public class GalleryActivity extends AppCompatActivity {
         galleryRv.setLayoutManager(layoutManager);
         rvAdapter = new GalleryAdapter(this);
         galleryRv.setAdapter(rvAdapter);
+
+//тестовый кусок
+        swipeRefresh.setRefreshing(false);
+        galleryRv.setVisibility(View.VISIBLE);
+        rvAdapter.setData(ImageData.getData());
+        rvAdapter.notifyDataSetChanged();
+
     }
-
-
     private void refreshItems() {
     }
 }
