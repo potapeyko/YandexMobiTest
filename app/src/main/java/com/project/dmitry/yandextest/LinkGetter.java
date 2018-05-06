@@ -45,7 +45,7 @@ public class LinkGetter implements LinkGetterCallback {
     private static final String YANDEX_DAY_FOTO_URL = "https://api-fotki.yandex.ru/api/podhistory/?format=json";
 
 
-    public void getUrls(Context appContext, ActivityCallback activity, Status stat) {
+    public void getUrls(@NonNull Context appContext, @NonNull ActivityCallback activity,@NonNull Status stat) {
         activityWeakReference = new WeakReference<>(activity);
         if (stat == Status.INTERNET) {//хотим получить из сети. Вызывается если свайпом обновить
             if (ConnectionUtils.haveNetworkConnection(appContext)) {//есть подключение, нужно пытаться
@@ -55,6 +55,8 @@ public class LinkGetter implements LinkGetterCallback {
                     okHttpTask.link(this);
                     okHttpTask.execute(YANDEX_DAY_FOTO_URL);
                 }
+            }else{
+                activity.urlPostResults(null,null);//сети нет, не можем данные получить. Кидаем ничего
             }
         }
         if (stat == Status.NO) {//просто получение ссылок. Либо из хранимых, либо из Shared

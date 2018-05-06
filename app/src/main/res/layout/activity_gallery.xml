@@ -9,16 +9,30 @@
         android:id="@+id/ac_gallery_update_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Обновление 12 часов назад"
         android:textAlignment="center" />
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/ac_gallery_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/ac_gallery_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:text="@string/empty_gallery_message"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:visibility="invisible" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ac_gallery_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"/>
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

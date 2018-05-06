@@ -19,15 +19,18 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
     private RecyclerView galleryRv;
     private GalleryAdapter rvAdapter;
     private TextView updateTimeTV;
+    private TextView galleryEmptyTV;
     private final Handler handler = new Handler();
     private Runnable runnableCode;
     private Calendar lastUpdate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         this.setTitle(getResources().getString(R.string.gallery_label));
         updateTimeTV = findViewById(R.id.ac_gallery_update_time);
+        galleryEmptyTV = findViewById(R.id.ac_gallery_empty);
         swipeRefresh = findViewById(R.id.ac_gallery_swipe_refresh);
         swipeRefresh.setRefreshing(true);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -42,7 +45,7 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
         galleryRv.setLayoutManager(layoutManager);
         rvAdapter = new GalleryAdapter(this);
         galleryRv.setAdapter(rvAdapter);
-        ((MyApplication) getApplication()).getUrls(this,LinkGetter.Status.NO);
+        ((MyApplication) getApplication()).getUrls(this, LinkGetter.Status.NO);
     }
 
     @Override
@@ -61,10 +64,10 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
         runnableCode = new Runnable() {
             @Override
             public void run() {
-                if(lastUpdate!=null){
-                    updateTimeTV.setText(getTimePeriod(lastUpdate,Calendar.getInstance()));
+                if (lastUpdate != null) {
+                    updateTimeTV.setText(getTimePeriod(lastUpdate, Calendar.getInstance()));
                 }
-                handler.postDelayed(this, 2*60*1000);//каждые 2 минуты
+                handler.postDelayed(this, 2 * 60 * 1000);//каждые 2 минуты
             }
         };
 // Start the initial runnable task by posting through the handler
@@ -72,19 +75,23 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
     }
 
     private void refreshItems() {
-        ((MyApplication) getApplication()).getUrls(this,LinkGetter.Status.INTERNET);//запрашиваем попытку обновиться по сети
+        ((MyApplication) getApplication()).getUrls(this, LinkGetter.Status.INTERNET);//запрашиваем попытку обновиться по сети
     }
+
     @Override
     public void urlPostResults(ArrayList<ImageData> data, Calendar lastUpdate) {
         swipeRefresh.setRefreshing(false);
         if (data == null) {// пришло ничего, значит не удалось прочитать
             Toast.makeText(this, R.string.image_download_faiil, Toast.LENGTH_SHORT).show();
-        }
-        else {
-            if(lastUpdate!=null){
-                this.lastUpdate=lastUpdate;
+            if(rvAdapter.getItemCount()==0){
+                galleryEmptyTV.setVisibility(View.VISIBLE);
+            }
+        } else {
+            galleryEmptyTV.setVisibility(View.GONE);
+            if (lastUpdate != null) {
+                this.lastUpdate = lastUpdate;
                 Calendar calendar = Calendar.getInstance();
-                updateTimeTV.setText(getTimePeriod(lastUpdate,calendar));
+                updateTimeTV.setText(getTimePeriod(lastUpdate, calendar));
             }
             galleryRv.setVisibility(View.VISIBLE);
             rvAdapter.setData(data);
@@ -96,17 +103,19 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
      * По разнице во времени возвращает строковую фразу для описания времени последнего обновления
      */
     private String getTimePeriod(Calendar lastUpdate, Calendar calendar) {
-        long milsecs1= lastUpdate.getTimeInMillis();
+        long milsecs1 = lastUpdate.getTimeInMillis();
         long milsecs2 = calendar.getTimeInMillis();
         long diff = milsecs2 - milsecs1;
-        if(diff<0){
-            diff=-diff;
+        if (diff < 0) {
+            diff = -diff;
         }
         long dminutes = diff / (60 * 1000);
         long dhours = diff / (60 * 60 * 1000);
-        if(dhours>12)return getString(R.string.time_12_and_more);
-        if(dhours>0)return getResources().getQuantityString(R.plurals.time_1_12_hour,(int)dhours,(int)dhours);//склонение выражения
-        if(dminutes>0)return getResources().getQuantityString(R.plurals.time_1_59_minutes,(int)dminutes,(int)dminutes);
+        if (dhours > 12) return getString(R.string.time_12_and_more);
+        if (dhours > 0)
+            return getResources().getQuantityString(R.plurals.time_1_12_hour, (int) dhours, (int) dhours);//склонение выражения
+        if (dminutes > 0)
+            return getResources().getQuantityString(R.plurals.time_1_59_minutes, (int) dminutes, (int) dminutes);
         return getString(R.string.time_less_minute);
     }
 }

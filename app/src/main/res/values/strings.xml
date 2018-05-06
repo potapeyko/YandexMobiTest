@@ -5,6 +5,7 @@
     <string name="time_12_and_more">Обновлено более 12 часов назад</string>
     <string name="time_less_minute">Обновлено менее минуты назад</string>
     <string name="menu_share">Поделиться</string>
+    <string name="empty_gallery_message">Сделайте свайп вниз для обновления</string>
 
     <plurals name="time_1_12_hour">
         <item quantity="one">Обновлено %1$d час назад</item>
