@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">YandexTest</string>
+    <string name="gallery_label">Фото дня - Яндекс.Фотки</string>
 </resources>
