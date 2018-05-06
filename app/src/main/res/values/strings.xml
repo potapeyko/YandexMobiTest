@@ -3,7 +3,17 @@
     <string name="gallery_label">Фото дня - Яндекс.Фотки</string>
     <string name="image_download_faiil">Не удалось загрузить картинки</string>
     <string name="time_12_and_more">Обновлено более 12 часов назад</string>
-    <string name="time_1_12_hour">Обновлено часов назад:</string>
-    <string name="time_1_59_minutes">Обновлено минут назад:</string>
     <string name="time_less_minute">Обновлено менее минуты назад</string>
+    <plurals name="time_1_12_hour">
+        <item quantity="one">Обновлено %1$d час назад</item>
+        <item quantity="two">Обновлено %1$d часа назад</item>
+        <item quantity="few">Обновлено %1$d часа назад</item>
+        <item quantity="many">Обновлено %1$d часов назад</item>
+    </plurals>
+    <plurals name="time_1_59_minutes">
+        <item quantity="one">Обновлено %1$d минуту назад</item>
+        <item quantity="two">Обновлено %1$d минуты назад</item>
+        <item quantity="few">Обновлено %1$d минуты назад</item>
+        <item quantity="many">Обновлено %1$d минут назад</item>
+    </plurals>
 </resources>

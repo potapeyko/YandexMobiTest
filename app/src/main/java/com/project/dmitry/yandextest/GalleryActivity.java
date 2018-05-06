@@ -91,6 +91,7 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
             rvAdapter.notifyDataSetChanged();
         }
     }
+
     /**
      * По разнице во времени возвращает строковую фразу для описания времени последнего обновления
      */
@@ -104,8 +105,8 @@ public class GalleryActivity extends AppCompatActivity implements ActivityCallba
         long dminutes = diff / (60 * 1000);
         long dhours = diff / (60 * 60 * 1000);
         if(dhours>12)return getString(R.string.time_12_and_more);
-        if(dhours>0)return getString(R.string.time_1_12_hour)+(int)dhours;
-        if(dminutes>0)return getString(R.string.time_1_59_minutes)+(int)dminutes;
+        if(dhours>0)return getResources().getQuantityString(R.plurals.time_1_12_hour,(int)dhours,(int)dhours);//склонение выражения
+        if(dminutes>0)return getResources().getQuantityString(R.plurals.time_1_59_minutes,(int)dminutes,(int)dminutes);
         return getString(R.string.time_less_minute);
     }
 }
